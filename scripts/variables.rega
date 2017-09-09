@@ -14,11 +14,13 @@ boolean bFirst = true;
 Write('[');
 WriteLine('{"id": "40", "name": "Alarmmeldungen", "val":' # dom.GetObject(40).Value() # ', "min": 0, "max": 65000, "unit": "", "type": "number", "enum": ""},');
 Write('{"id": "41", "name": "Servicemeldungen", "val":' # dom.GetObject(41).Value() # ', "min": 0, "max": 65000, "unit": "", "type": "number", "enum": ""}');
+
 foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
     WriteLine(',');
     oSysVar = dom.GetObject(sSysVarId);
     sValueType = oSysVar.ValueType();
     Write('{"id": "' # sSysVarId # '", "name": "' # oSysVar.Name() # '", "val": ');
+
     if (sValueType == 20) {
         Write('"' # oSysVar.Value() # '"');
     } else {
@@ -37,16 +39,20 @@ foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
             }
         }
     }
+
     string sValueMin = oSysVar.ValueMin();
     if (sValueMin == '') {
         sValueMin = 'null';
     }
+
     string sValueMax = oSysVar.ValueMax();
     if (sValueMax == '') {
         sValueMax = 'null';
     }
+
     Write(',"ts":"' # oSysVar.Timestamp());
     Write('","min":' # sValueMin # ',"max":' # sValueMax # ',"unit":"' # oSysVar.ValueUnit() # '"');
+
     if (sValueType == 2) {
         Write(', "type": "boolean", "enum": "' # oSysVar.ValueName0() # ';' # oSysVar.ValueName1());
     } else {
@@ -56,6 +62,8 @@ foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
             Write(', "type": "number", "enum": "' # oSysVar.ValueList());
         }
     }
+
     Write('"}');
 }
+
 Write(']');

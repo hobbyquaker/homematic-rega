@@ -13,16 +13,19 @@ boolean bFirst       = true;
 boolean bFirstSecond = true;
 
 Write("[");
+
 foreach (sRoomId, dom.GetObject(ID_ROOMS).EnumUsedIDs()) {
     if (bFirst == false) {
         WriteLine(',');
     } else {
         bFirst = false;
     }
+
     oRoom = dom.GetObject(sRoomId);
     Write('{"id": "' # sRoomId # '", "name": "' # oRoom.Name() # '", ');
     Write('"channels":[');
     bFirstSecond = true;
+
     foreach(sChannelId, oRoom.EnumUsedIDs()) {
         if (bFirstSecond == false) {
             Write(',');
@@ -31,6 +34,8 @@ foreach (sRoomId, dom.GetObject(ID_ROOMS).EnumUsedIDs()) {
         }
         Write(sChannelId);
     }
+
     Write(']}');
 }
+
 Write(']');

@@ -1,0 +1,45 @@
+{
+  "name": "homematic-rega",
+  "version": "1.0.0",
+  "description": "Homematic CCU ReGaHSS Remote Script Interface",
+  "main": "index.js",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "engineStrict": true,
+  "scripts": {
+    "test": "camo-purge ; gulp lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hobbyquaker/homematic-rega.git"
+  },
+  "keywords": [
+    "eq-3",
+    "homematic",
+    "ccu",
+    "regahss",
+    "script",
+    "smart home automation"
+  ],
+  "author": "Sebastian Raff <hq@ccu.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hobbyquaker/homematic-rega/issues"
+  },
+  "homepage": "https://github.com/hobbyquaker/homematic-rega#readme",
+  "dependencies": {
+    "iconv-lite": "^0.4.18",
+    "request": "^2.81.0",
+    "xml2js": "^0.4.19"
+  },
+  "devDependencies": {
+    "camo-purge": "latest",
+    "gulp": "latest",
+    "gulp-xo": "latest",
+    "jsdoc-to-markdown": "latest"
+  },
+  "xo": {
+    "space": 4
+  }
+}

@@ -14,24 +14,24 @@ boolean dFirst = true;
 
 foreach (sDevId, root.Devices().EnumUsedIDs()) {
 
-    object oDevice   = dom.GetObject(sDevId);
-    boolean bDevReady = oDevice.ReadyConfig();
+object oDevice   = dom.GetObject(sDevId);
+boolean bDevReady = oDevice.ReadyConfig();
 
-    if (bDevReady) {
+if (bDevReady) {
 
-        if (dFirst) {
-          dFirst = false;
-        } else {
-          WriteLine(',');
-        }
+    if (dFirst) {
+        dFirst = false;
+    } else {
+        WriteLine(',');
+    }
 
-        Write('{"id": "' # sDevId # '", "address": "' # oDevice.Address() # '", "name": "' # oDevice.Name() # '"}');
+    Write('{"id": "' # sDevId # '", "address": "' # oDevice.Address() # '", "name": "' # oDevice.Name() # '"}');
 
-        foreach(sChnId, oDevice.Channels()) {
-        	object oChannel = dom.GetObject(sChnId);
-            WriteLine(',');
-          	Write('{"id": "' # sChnId # '", "address": "' # oChannel.Address() # '", "name":"' # oChannel.Name() # '"}');
-        }
+    foreach(sChnId, oDevice.Channels()) {
+        object oChannel = dom.GetObject(sChnId);
+        WriteLine(',');
+        Write('{"id": "' # sChnId # '", "address": "' # oChannel.Address() # '", "name":"' # oChannel.Name() # '"}');
+    }
 
     }
 }

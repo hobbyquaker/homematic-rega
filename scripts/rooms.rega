@@ -15,21 +15,21 @@ boolean bFirstSecond = true;
 Write("[");
 foreach (sRoomId, dom.GetObject(ID_ROOMS).EnumUsedIDs()) {
     if (bFirst == false) {
-      WriteLine(',');
+        WriteLine(',');
     } else {
-      bFirst = false;
+        bFirst = false;
     }
     oRoom = dom.GetObject(sRoomId);
-	Write('{"id": "' # sRoomId # '", "name": "' # oRoom.Name() # '", ');
+    Write('{"id": "' # sRoomId # '", "name": "' # oRoom.Name() # '", ');
     Write('"channels":[');
-	bFirstSecond = true;
+    bFirstSecond = true;
     foreach(sChannelId, oRoom.EnumUsedIDs()) {
-		if (bFirstSecond == false) {
-		  Write(',');
-		} else {
-		  bFirstSecond = false;
-		}
-		Write(sChannelId);
+        if (bFirstSecond == false) {
+            Write(',');
+        } else {
+            bFirstSecond = false;
+        }
+        Write(sChannelId);
     }
     Write(']}');
 }

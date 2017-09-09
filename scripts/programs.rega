@@ -9,17 +9,16 @@ object oProgram;
 boolean first = true;
 Write('[');
 foreach (oPrgID, dom.GetObject(ID_PROGRAMS).EnumUsedIDs()) {
-  oProgram = dom.GetObject(oPrgID);
-  if(oProgram != null) {
-    if (first == false) {
-      WriteLine(',');
-    } else {
-      first = false;
+    oProgram = dom.GetObject(oPrgID);
+    if(oProgram != null) {
+        if (first == false) {
+            WriteLine(',');
+        } else {
+            first = false;
+        }
+        Write('{"id": "' # oPrgID # '", "name":"' # oProgram.Name() # '", "active":' # oProgram.Active());
+        Write(',"ts":"' # oProgram.ProgramLastExecuteTime());
+        Write('"}');
     }
-    Write('{"id": "' # oPrgID # '", "name":"' # oProgram.Name() # '", "active":' # oProgram.Active());
-    Write(',"ts":"' # oProgram.ProgramLastExecuteTime());
-    Write('"}');
-
-  }
 }
 Write(']');

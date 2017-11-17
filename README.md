@@ -224,6 +224,7 @@ and links.
 * [binrpc](https://github.com/hobbyquaker/binrpc) - Node.js client/server for the Homematic BINRPC protocol.
 * [homematic-xmlrpc](https://github.com/hobbyquaker/homematic-xmlrpc) - Node.js client/server for the Homematic XMLRPC 
 protocol.
+* [occu-test](https://github.com/hobbyquaker/occu-test) - Automated System Tests for ReGaHss.
 
 
 ## License

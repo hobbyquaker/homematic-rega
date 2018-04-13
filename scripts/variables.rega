@@ -11,9 +11,18 @@ string sValueType;
 string sValue;
 boolean bFirst = true;
 
+var alarms = dom.GetObject(40).Value();
+if (alarms == '') {
+    alarms = 0;
+}
+var msgs = dom.GetObject(41).Value();
+if (msgs == '') {
+    msgs = 0;
+}
+
 Write('[');
-WriteLine('{"id": "40", "name": "Alarmmeldungen", "val":' # dom.GetObject(40).Value() # ', "min": 0, "max": 65000, "unit": "", "type": "number", "enum": ""},');
-Write('{"id": "41", "name": "Servicemeldungen", "val":' # dom.GetObject(41).Value() # ', "min": 0, "max": 65000, "unit": "", "type": "number", "enum": ""}');
+WriteLine('{"id": "40", "name": "Alarmmeldungen", "val": ' # alarms # ', "min": 0, "max": 65000, "unit": "", "type": "number", "enum": ""},');
+Write('{"id": "41", "name": "Servicemeldungen", "val": ' # msgs # ', "min": 0, "max": 65000, "unit": "", "type": "number", "enum": ""}');
 
 foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
     WriteLine(',');

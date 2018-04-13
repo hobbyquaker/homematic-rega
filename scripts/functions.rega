@@ -23,7 +23,7 @@ foreach (sFunctionId, dom.GetObject(ID_FUNCTIONS).EnumUsedIDs()) {
     }
 
     oFunction = dom.GetObject(sFunctionId);
-    Write('{"id": "' # sFunctionId # '", "name": "' # oFunction.Name() # '", "channels": [');
+    Write('{"id": ' # sFunctionId # ', "name": "' # oFunction.Name() # '", "channels": [');
     bFirstSecond = true;
 
     foreach(sChannelId, oFunction.EnumUsedIDs()) {

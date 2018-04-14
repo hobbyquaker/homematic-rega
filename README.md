@@ -65,6 +65,7 @@ rega.getVariables((err, res) => {
     * [.exec(script, [callback])](#Rega+exec)
     * [.script(file, [callback])](#Rega+script)
     * [.getChannels(callback)](#Rega+getChannels)
+    * [.getValues(callback)](#Rega+getValues)
     * [.getPrograms(callback)](#Rega+getPrograms)
     * [.getVariables(callback)](#Rega+getVariables)
     * [.getRooms(callback)](#Rega+getRooms)
@@ -113,6 +114,17 @@ Execute a rega script from a file
 
 ### rega.getChannels(callback)
 Get all devices and channels
+
+**Kind**: instance method of [<code>Rega</code>](#Rega)  
+
+| Param | Type |
+| --- | --- |
+| callback | <code>function</code> | 
+
+<a name="Rega+getValues"></a>
+
+### rega.getValues(callback)
+Get all devices and channels values
 
 **Kind**: instance method of [<code>Rega</code>](#Rega)  
 
@@ -224,7 +236,6 @@ and links.
 * [binrpc](https://github.com/hobbyquaker/binrpc) - Node.js client/server for the Homematic BINRPC protocol.
 * [homematic-xmlrpc](https://github.com/hobbyquaker/homematic-xmlrpc) - Node.js client/server for the Homematic XMLRPC 
 protocol.
-* [occu-test](https://github.com/hobbyquaker/occu-test) - Automated System Tests for ReGaHss.
 
 
 ## License

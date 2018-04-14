@@ -1,0 +1,58 @@
+!# values.rega
+!#
+!# Dieses Homematic-Script gibt eine Liste aller Datenpunkte im JSON Format aus
+!#
+!# 3'2013-4'2018 hobbyquaker https://github.com/hobbyquaker
+!#
+
+
+string sDevId;
+string sChnId;
+string sDPId;
+
+Write('[');
+
+boolean dFirst = true;
+
+foreach (sDevId, root.Devices().EnumUsedIDs()) {
+
+    object oDevice   = dom.GetObject(sDevId);
+    boolean bDevReady = oDevice.ReadyConfig();
+
+    if (bDevReady) {
+
+        foreach(sChnId, oDevice.Channels().EnumUsedIDs()) {
+            object oChannel = dom.GetObject(sChnId);
+            foreach(sDPId, oChannel.DPs().EnumUsedIDs()) {
+                object oDP = dom.GetObject(sDPId);
+                var type = oDP.ValueType();
+                var value = oDP.Value();
+
+                if (dFirst) {
+                    dFirst = false;
+                } else {
+                    WriteLine(',');
+                }
+
+                if (type == 20) {
+                    Write('{"name": "' # oDP.Name() # '", "value": "' # value # '", "ts": "' # oDP.Timestamp() # '"}');
+                } else {
+                    if (type == 2) {
+                        if (value) {
+                            Write('{"name": "' # oDP.Name() # '", "value": true, "ts": "' # oDP.Timestamp() # '"}');
+                        } else {
+                            Write('{"name": "' # oDP.Name() # '", "value": false, "ts": "' # oDP.Timestamp() # '"}');
+                        }
+                    } else {
+                        if (value == '') {
+                          value = 0;
+                        }
+                        Write('{"name": "' # oDP.Name() # '", "value": ' # value # ', "ts": "' # oDP.Timestamp() # '"}');
+                    }
+                }
+            }
+        }
+    }
+}
+
+Write(']');

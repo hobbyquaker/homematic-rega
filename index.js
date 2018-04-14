@@ -103,6 +103,15 @@ class Rega {
     }
 
     /**
+     * Get all devices and channels values
+     * @method Rega#getValues
+     * @param {function} callback
+     */
+    getValues(callback) {
+        this._jsonScript(path.join(__dirname, 'scripts', 'values.rega'), callback);
+    }
+
+    /**
      * Get all programs
      * @method Rega#getPrograms
      * @param {function} callback

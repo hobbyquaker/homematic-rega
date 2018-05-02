@@ -191,12 +191,16 @@ class Rega {
             if (err) {
                 callback(err);
             } else {
-                res.forEach(sysvar => {
+                res.forEach((sysvar, index) => {
+                    if (sysvar.type === 'string') {
+                        sysvar.val = unescape(sysvar.val);
+                    }
                     if (sysvar.enum === '') {
                         sysvar.enum = [];
                     } else {
                         sysvar.enum = this._translateEnum(sysvar.enum.split(';'));
                     }
+                    res[index] = sysvar;
                 });
                 callback(null, res);
             }
@@ -229,10 +233,7 @@ class Rega {
      * @param {function} [callback]
      */
     setVariable(id, val, callback) {
-        if (typeof val === 'string') {
-            val = '"' + val + '"';
-        }
-        const script = 'dom.GetObject(' + id + ').State(' + val + ');';
+        const script = 'dom.GetObject(' + id + ').State(' + JSON.stringify(val) + ');';
         this.exec(script, callback);
     }
 

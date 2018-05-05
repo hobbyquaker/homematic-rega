@@ -232,6 +232,7 @@ Rename an object
 
 ## Related projects
 
+* [node-red-contrib-ccu](https://github.com/hobbyquaker/node-red-contrib-ccu) - Node-RED nodes for the Homematic CCU.
 * [homematic-manager](https://github.com/hobbyquaker/homematic-manager) - Cross-platform App to manage Homematic devices 
 and links.
 * [hm2mqtt.js](https://github.com/hobbyquaker/hm2mqtt.js) - Interface between Homematic and MQTT.

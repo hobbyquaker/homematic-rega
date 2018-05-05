@@ -41,6 +41,7 @@
     "jsdoc-to-markdown": "latest"
   },
   "xo": {
-    "space": 4
+    "space": 4,
+    "ignore": ["test.js"]
   }
 }

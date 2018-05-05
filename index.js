@@ -10,10 +10,12 @@ class Rega {
      * @param {object} options
      * @param {string} options.host - hostname or IP address of the Homematic CCU
      * @param {string} [options.language=de] - language used for translation of placeholders in variables/rooms/functions
+     * @param {boolean} [options.disableTranslation=false] - disable translation of placeholders
      * @param {number} [options.port=8181] - rega remote script port
      */
     constructor(options) {
         this.language = options.language || 'de';
+        this.disableTranslation = options.disableTranslation;
         this.host = options.host;
         this.port = options.port || 8181;
         this.url = 'http://' + this.host + ':' + this.port + '/rega.exe';
@@ -148,38 +150,44 @@ class Rega {
     }
 
     _translate(item) {
-        let key = item;
-        if (key.startsWith('${') && key.endsWith('}')) {
-            key = key.substr(2, item.length - 3);
-        }
-        if (this.translations[key]) {
-            item = this.translations[key];
+        if (!this.disableTranslation) {
+            let key = item;
+            if (key.startsWith('${') && key.endsWith('}')) {
+                key = key.substr(2, item.length - 3);
+            }
+            if (this.translations[key]) {
+                item = this.translations[key];
+            }
         }
         return item;
     }
 
     _translateNames(res) {
-        Object.keys(res).forEach(id => {
-            const obj = res[id];
-            obj.name = this._translate(obj.name);
-        });
+        if (!this.disableTranslation) {
+            Object.keys(res).forEach(id => {
+                const obj = res[id];
+                obj.name = this._translate(obj.name);
+            });
+        }
         return res;
     }
 
     _translateEnum(values) {
-        values.forEach((val, i) => {
-            values[i] = this._translate(val);
-        });
+        if (!this.disableTranslation) {
+            values.forEach((val, i) => {
+                values[i] = this._translate(val);
+            });
+        }
         return values;
     }
 
     _translateJsonScript(file, callback) {
-        if (this.translations) {
+        if (this.translations || this.disableTranslation) {
             this._jsonScript(file, (err, res) => {
                 if (err) {
                     callback(err);
                 } else {
-                    callback(null, this._translateNames(res));
+                    callback(null, this.disableTranslation ? res : this._translateNames(res));
                 }
             });
         } else {

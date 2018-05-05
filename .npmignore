@@ -1,2 +1,5 @@
 .idea
 .DS_Store
+test.js
+.travis.yml
+readme/*

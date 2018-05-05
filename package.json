@@ -8,7 +8,9 @@
   },
   "engineStrict": true,
   "scripts": {
-    "test": "camo-purge ; gulp lint"
+    "test": "camo-purge ; xo",
+    "lintfix": "xo --fix",
+    "docs": "cat readme/README.header.md > README.md; jsdoc2md index.js >> README.md; cat readme/README.footer.md >> README.md"
   },
   "repository": {
     "type": "git",
@@ -35,8 +37,7 @@
   },
   "devDependencies": {
     "camo-purge": "latest",
-    "gulp": "latest",
-    "gulp-xo": "latest",
+    "xo": "latest",
     "jsdoc-to-markdown": "latest"
   },
   "xo": {

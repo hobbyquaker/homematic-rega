@@ -19,6 +19,7 @@ class Rega {
         this.url = 'http://' + this.host + ':' + this.port + '/rega.exe';
         this.encoding = 'iso-8859-1';
     }
+
     _parseResponse(res, callback) {
         const outputEnd = res.lastIndexOf('<xml>');
         const output = res.substr(0, outputEnd);
@@ -79,6 +80,7 @@ class Rega {
             }
         });
     }
+
     _jsonScript(file, callback) {
         this.script(file, (err, res) => {
             if (err) {
@@ -119,6 +121,7 @@ class Rega {
     getPrograms(callback) {
         this._jsonScript(path.join(__dirname, 'scripts', 'programs.rega'), callback);
     }
+
     _getTranslations(callback) {
         const url = 'http://' + this.host + '/webui/js/lang/' + this.language + '/translate.lang.extension.js';
         this.translations = {};
@@ -133,6 +136,7 @@ class Rega {
             callback();
         });
     }
+
     _parseTranslations(body) {
         const lines = body.split('\n');
         lines.forEach(line => {
@@ -142,6 +146,7 @@ class Rega {
             }
         });
     }
+
     _translate(item) {
         let key = item;
         if (key.startsWith('${') && key.endsWith('}')) {
@@ -152,6 +157,7 @@ class Rega {
         }
         return item;
     }
+
     _translateNames(res) {
         Object.keys(res).forEach(id => {
             const obj = res[id];
@@ -159,12 +165,14 @@ class Rega {
         });
         return res;
     }
+
     _translateEnum(values) {
         values.forEach((val, i) => {
             values[i] = this._translate(val);
         });
         return values;
     }
+
     _translateJsonScript(file, callback) {
         if (this.translations) {
             this._jsonScript(file, (err, res) => {

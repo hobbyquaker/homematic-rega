@@ -23,16 +23,21 @@ class Rega {
     }
 
     _parseResponse(res, callback) {
-        const outputEnd = res.lastIndexOf('<xml>');
-        const output = res.substr(0, outputEnd);
-        const xml = res.substr(outputEnd);
-        parseXml(xml, {explicitArray: false}, (err, res) => {
-            if (err) {
-                callback(err, output);
-            } else {
-                callback(null, output, res.xml);
-            }
-        });
+        if (res && res.match(/xml/)) {
+            const outputEnd = res.lastIndexOf('<xml>');
+            const output = res.substr(0, outputEnd);
+            const xml = res.substr(outputEnd);
+            parseXml(xml, {explicitArray: false}, (err, res) => {
+                if (err) {
+                    callback(err, output);
+                } else {
+                    callback(null, output, (res && res.xml) || {});
+                }
+            });
+        } else {
+            callback(new Error('empty rega response'));
+        }
+
     }
 
     /**

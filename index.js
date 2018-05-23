@@ -37,7 +37,6 @@ class Rega {
         } else {
             callback(new Error('empty rega response'));
         }
-
     }
 
     /**

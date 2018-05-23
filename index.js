@@ -31,7 +31,7 @@ class Rega {
                 if (err) {
                     callback(err, output);
                 } else {
-                    callback(null, output, res);
+                    callback(null, output, res.xml);
                 }
             });
         } else {

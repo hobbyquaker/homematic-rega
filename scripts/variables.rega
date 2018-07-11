@@ -65,13 +65,13 @@ foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
     Write('","min":' # sValueMin # ',"max":' # sValueMax # ',"unit":"' # oSysVar.ValueUnit() # '"');
 
     if (sValueType == 2) {
-        Write(', "type": "boolean", "enum": "' # oSysVar.ValueName0() # ';' # oSysVar.ValueName1());
+        Write(', "type": "boolean", "enum": "');
+        WriteURL(oSysVar.ValueName0());
+        Write(';');
+        WriteURL(oSysVar.ValueName1());
     } else {
-        if (sValueType == 20) {
-            Write(', "type": "string", "enum": "' # oSysVar.ValueList());
-        } else {
-            Write(', "type": "number", "enum": "' # oSysVar.ValueList());
-        }
+        Write(', "type": "number", "enum": "');
+        WriteURL(oSysVar.ValueList());
     }
 
     Write('"}');

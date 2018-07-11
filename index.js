@@ -176,13 +176,6 @@ class Rega {
         return res;
     }
 
-    _unescapeEnum(values) {
-        values.forEach((val, i) => {
-            values[i] = unescape(val);
-        });
-        return values;
-    }
-
     _translateEnum(values) {
         if (!this.disableTranslation) {
             values.forEach((val, i) => {
@@ -225,7 +218,7 @@ class Rega {
                     if (sysvar.enum === '') {
                         sysvar.enum = [];
                     } else {
-                        sysvar.enum = this._unescapeEnum(this._translateEnum(sysvar.enum.split(';')));
+                        sysvar.enum = this._translateEnum(unescape(sysvar.enum).split(';'));
                     }
                     res[index] = sysvar;
                 });

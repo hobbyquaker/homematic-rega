@@ -70,8 +70,12 @@ foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
         Write(';');
         WriteURL(oSysVar.ValueName1());
     } else {
-        Write(', "type": "number", "enum": "');
-        WriteURL(oSysVar.ValueList());
+        if (sValueType == 20) {
+            Write(', "type": "string", "enum": "');
+        } else {
+            Write(', "type": "number", "enum": "');
+            WriteURL(oSysVar.ValueList());
+        }
     }
 
     Write('"}');

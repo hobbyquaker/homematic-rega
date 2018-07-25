@@ -69,16 +69,19 @@ foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
         WriteURL(oSysVar.ValueName0());
         Write(';');
         WriteURL(oSysVar.ValueName1());
+        Write('"');
     } else {
         if (sValueType == 20) {
-            Write(', "type": "string", "enum": "');
+            Write(', "type": "string", "enum": ""');
         } else {
             Write(', "type": "number", "enum": "');
             WriteURL(oSysVar.ValueList());
+            Write('"');
         }
     }
+    Write(', "channel": "' # oSysVar.Channel() # '"');
 
-    Write('"}');
+    Write('}');
 }
 
 Write(']');

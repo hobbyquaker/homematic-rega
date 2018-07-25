@@ -1,6 +1,6 @@
 {
   "name": "homematic-rega",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Homematic CCU ReGaHSS Remote Script Interface",
   "main": "index.js",
   "engines": {

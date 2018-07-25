@@ -76,6 +76,7 @@ class Rega {
      * @param {function} [callback]
      */
     script(file, callback) {
+        // TODO cache files
         fs.readFile(file, (err, res) => {
             if (err) {
                 if (typeof callback === 'function') {

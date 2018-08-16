@@ -22,6 +22,13 @@ class Rega {
         this.encoding = 'iso-8859-1';
     }
 
+    /**
+     * @callback Rega~scriptCallback
+     * @param {?Error} err
+     * @param {string} output - the scripts output
+     * @param {Object.<string, string>} variables - contains all variables that are set in the script (as strings)
+     */
+
     _parseResponse(res, callback) {
         if (res && res.match(/xml/)) {
             const outputEnd = res.lastIndexOf('<xml>');
@@ -43,7 +50,7 @@ class Rega {
      * Execute a rega script
      * @method Rega#exec
      * @param {string} script - string containing a rega script
-     * @param {function} [callback]
+     * @param {Rega~scriptCallback} [callback]
      */
     exec(script, callback) {
         if (typeof callback !== 'function') {
@@ -73,7 +80,7 @@ class Rega {
      * Execute a rega script from a file
      * @method Rega#script
      * @param {string} file - path to script file
-     * @param {function} [callback]
+     * @param {Rega~scriptCallback} [callback]
      */
     script(file, callback) {
         // TODO cache files
@@ -105,7 +112,7 @@ class Rega {
     /**
      * Get all devices and channels
      * @method Rega#getChannels
-     * @param {function} callback
+     * @param {Rega~channelCallback} callback
      */
     getChannels(callback) {
         this._jsonScript(path.join(__dirname, 'scripts', 'channels.rega'), callback);
@@ -114,7 +121,7 @@ class Rega {
     /**
      * Get all devices and channels values
      * @method Rega#getValues
-     * @param {function} callback
+     * @param {Rega~valuesCallback} callback
      */
     getValues(callback) {
         this._jsonScript(path.join(__dirname, 'scripts', 'values.rega'), callback);
@@ -123,7 +130,7 @@ class Rega {
     /**
      * Get all programs
      * @method Rega#getPrograms
-     * @param {function} callback
+     * @param {Rega~programsCallback} callback
      */
     getPrograms(callback) {
         this._jsonScript(path.join(__dirname, 'scripts', 'programs.rega'), callback);
@@ -205,7 +212,7 @@ class Rega {
     /**
      * Get all variables
      * @method Rega#getVariables
-     * @param {function} callback
+     * @param {Rega~variablesCallback} callback
      */
     getVariables(callback) {
         this._translateJsonScript(path.join(__dirname, 'scripts', 'variables.rega'), (err, res) => {
@@ -231,7 +238,7 @@ class Rega {
     /**
      * Get all rooms
      * @method Rega#getRooms
-     * @param {function} callback
+     * @param {Rega~roomsCallback} callback
      */
     getRooms(callback) {
         this._translateJsonScript(path.join(__dirname, 'scripts', 'rooms.rega'), callback);
@@ -240,7 +247,7 @@ class Rega {
     /**
      * Get all functions
      * @method Rega#getFunctions
-     * @param {function} callback
+     * @param {Rega~functionsCallback} callback
      */
     getFunctions(callback) {
         this._translateJsonScript(path.join(__dirname, 'scripts', 'functions.rega'), callback);

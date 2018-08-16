@@ -179,6 +179,9 @@ class Rega {
             Object.keys(res).forEach(id => {
                 const obj = res[id];
                 obj.name = this._translate(obj.name);
+                if (obj.info) {
+                    obj.info = this._translate(obj.info);
+                }
             });
         }
         return res;
@@ -220,6 +223,7 @@ class Rega {
                 callback(err);
             } else {
                 res.forEach((sysvar, index) => {
+                    sysvar.info = unescape(sysvar.info);
                     if (sysvar.type === 'string') {
                         sysvar.val = unescape(sysvar.val);
                     }

@@ -28,7 +28,9 @@ foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
     WriteLine(',');
     oSysVar = dom.GetObject(sSysVarId);
     sValueType = oSysVar.ValueType();
-    Write('{"id": ' # sSysVarId # ', "name": "' # oSysVar.Name() # '", "val": ');
+    Write('{"id": ' # sSysVarId # ', "name": "' # oSysVar.Name() # '", "info": "');
+    WriteURL(oSysVar.DPInfo());
+    Write('", "val": ');
 
     if (sValueType == 20) {
         Write('"');

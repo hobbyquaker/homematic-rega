@@ -1,7 +1,7 @@
 # homematic-rega
 
 [![NPM version](https://badge.fury.io/js/homematic-rega.svg)](http://badge.fury.io/js/homematic-rega)
-[![Dependencies Status](https://david-dm.org/hobbyquaker/homematic-rega/status.svg)](https://david-dm.org/hobbyquaker/homematic-rega)
+[![Dependency Status](https://gemnasium.com/badges/github.com/hobbyquaker/homematic-rega.svg)](https://gemnasium.com/github.com/hobbyquaker/homematic-rega)
 [![Build Status](https://travis-ci.org/hobbyquaker/homematic-rega.svg?branch=master)](https://travis-ci.org/hobbyquaker/homematic-rega)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 [![License][mit-badge]][mit-url]
@@ -63,18 +63,21 @@ rega.getVariables((err, res) => {
 
 * [Rega](#Rega)
     * [new Rega(options)](#new_Rega_new)
-    * [.exec(script, [callback])](#Rega+exec)
-    * [.script(file, [callback])](#Rega+script)
-    * [.getChannels(callback)](#Rega+getChannels)
-    * [.getValues(callback)](#Rega+getValues)
-    * [.getPrograms(callback)](#Rega+getPrograms)
-    * [.getVariables(callback)](#Rega+getVariables)
-    * [.getRooms(callback)](#Rega+getRooms)
-    * [.getFunctions(callback)](#Rega+getFunctions)
-    * [.setVariable(id, val, [callback])](#Rega+setVariable)
-    * [.startProgram(id, [callback])](#Rega+startProgram)
-    * [.setProgram(id, active, [callback])](#Rega+setProgram)
-    * [.setName(id, name, [callback])](#Rega+setName)
+    * _instance_
+        * [.exec(script, [callback])](#Rega+exec)
+        * [.script(file, [callback])](#Rega+script)
+        * [.getChannels(callback)](#Rega+getChannels)
+        * [.getValues(callback)](#Rega+getValues)
+        * [.getPrograms(callback)](#Rega+getPrograms)
+        * [.getVariables(callback)](#Rega+getVariables)
+        * [.getRooms(callback)](#Rega+getRooms)
+        * [.getFunctions(callback)](#Rega+getFunctions)
+        * [.setVariable(id, val, [callback])](#Rega+setVariable)
+        * [.startProgram(id, [callback])](#Rega+startProgram)
+        * [.setProgram(id, active, [callback])](#Rega+setProgram)
+        * [.setName(id, name, [callback])](#Rega+setName)
+    * _inner_
+        * [~scriptCallback](#Rega..scriptCallback) : <code>function</code>
 
 <a name="new_Rega_new"></a>
 
@@ -98,7 +101,7 @@ Execute a rega script
 | Param | Type | Description |
 | --- | --- | --- |
 | script | <code>string</code> | string containing a rega script |
-| [callback] | <code>function</code> |  |
+| [callback] | [<code>scriptCallback</code>](#Rega..scriptCallback) |  |
 
 <a name="Rega+script"></a>
 
@@ -110,7 +113,7 @@ Execute a rega script from a file
 | Param | Type | Description |
 | --- | --- | --- |
 | file | <code>string</code> | path to script file |
-| [callback] | <code>function</code> |  |
+| [callback] | [<code>scriptCallback</code>](#Rega..scriptCallback) |  |
 
 <a name="Rega+getChannels"></a>
 
@@ -121,7 +124,7 @@ Get all devices and channels
 
 | Param | Type |
 | --- | --- |
-| callback | <code>function</code> | 
+| callback | <code>Rega~channelCallback</code> | 
 
 <a name="Rega+getValues"></a>
 
@@ -132,7 +135,7 @@ Get all devices and channels values
 
 | Param | Type |
 | --- | --- |
-| callback | <code>function</code> | 
+| callback | <code>Rega~valuesCallback</code> | 
 
 <a name="Rega+getPrograms"></a>
 
@@ -143,7 +146,7 @@ Get all programs
 
 | Param | Type |
 | --- | --- |
-| callback | <code>function</code> | 
+| callback | <code>Rega~programsCallback</code> | 
 
 <a name="Rega+getVariables"></a>
 
@@ -154,7 +157,7 @@ Get all variables
 
 | Param | Type |
 | --- | --- |
-| callback | <code>function</code> | 
+| callback | <code>Rega~variablesCallback</code> | 
 
 <a name="Rega+getRooms"></a>
 
@@ -165,7 +168,7 @@ Get all rooms
 
 | Param | Type |
 | --- | --- |
-| callback | <code>function</code> | 
+| callback | <code>Rega~roomsCallback</code> | 
 
 <a name="Rega+getFunctions"></a>
 
@@ -176,7 +179,7 @@ Get all functions
 
 | Param | Type |
 | --- | --- |
-| callback | <code>function</code> | 
+| callback | <code>Rega~functionsCallback</code> | 
 
 <a name="Rega+setVariable"></a>
 
@@ -228,6 +231,17 @@ Rename an object
 | id | <code>number</code> | 
 | name | <code>string</code> | 
 | [callback] | <code>function</code> | 
+
+<a name="Rega..scriptCallback"></a>
+
+### Rega~scriptCallback : <code>function</code>
+**Kind**: inner typedef of [<code>Rega</code>](#Rega)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>Error</code> |  |
+| output | <code>string</code> | the scripts output |
+| variables | <code>Object.&lt;string, string&gt;</code> | contains all variables that are set in the script (as strings) |
 
 
 ## Related projects

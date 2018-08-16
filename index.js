@@ -180,7 +180,7 @@ class Rega {
                 const obj = res[id];
                 obj.name = this._translate(obj.name);
                 if (obj.info) {
-                    obj.info = this._translate(obj.info);
+                    obj.info = this._translate(unescape(obj.info));
                 }
             });
         }
@@ -223,7 +223,6 @@ class Rega {
                 callback(err);
             } else {
                 res.forEach((sysvar, index) => {
-                    sysvar.info = unescape(sysvar.info);
                     if (sysvar.type === 'string') {
                         sysvar.val = unescape(sysvar.val);
                     }

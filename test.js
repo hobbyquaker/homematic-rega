@@ -1,5 +1,6 @@
 const Rega = require('./index.js');
-const rega = new Rega({host: '172.16.23.175', disableTranslation: false});
+const rega = new Rega({host: 'homematic-ccu3', disableTranslation: false});
+
 
 rega.exec('string x = "Hello";\nWriteLine(x # " World!");', (err, output, objects) => {
     if (err) {
@@ -13,6 +14,21 @@ rega.exec('string x = "Hello";\nWriteLine(x # " World!");', (err, output, object
 
         rega.getRooms((err, res) => {
             console.log('getRooms', err, res);
+
+            rega.getFunctions((err, res) => {
+                console.log('getFunctions', err, res);
+
+                rega.getPrograms((err, res) => {
+                    console.log('getPrograms', err, res);
+
+                    rega.getChannels((err, res) => {
+                        console.log('getChannels', err, res);
+                    });
+
+                });
+
+            });
+
         });
 
     });

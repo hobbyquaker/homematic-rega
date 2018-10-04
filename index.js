@@ -223,6 +223,7 @@ class Rega {
                 callback(err);
             } else {
                 res.forEach((sysvar, index) => {
+                    sysvar.name = unescape(sysvar.name);
                     if (sysvar.type === 'string') {
                         sysvar.val = unescape(sysvar.val);
                     }

@@ -102,8 +102,8 @@ class Rega {
             } else {
                 try {
                     callback(null, JSON.parse(res));
-                } catch (err) {
-                    callback(err);
+                } catch (error) {
+                    callback(error);
                 }
             }
         });

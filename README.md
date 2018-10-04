@@ -1,7 +1,7 @@
 # homematic-rega
 
 [![NPM version](https://badge.fury.io/js/homematic-rega.svg)](http://badge.fury.io/js/homematic-rega)
-[![Dependency Status](https://gemnasium.com/badges/github.com/hobbyquaker/homematic-rega.svg)](https://gemnasium.com/github.com/hobbyquaker/homematic-rega)
+[![dependencies Status](https://david-dm.org/hobbyquaker/homematic-rega/status.svg)](https://david-dm.org/hobbyquaker/homematic-rega)
 [![Build Status](https://travis-ci.org/hobbyquaker/homematic-rega.svg?branch=master)](https://travis-ci.org/hobbyquaker/homematic-rega)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 [![License][mit-badge]][mit-url]

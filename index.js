@@ -149,6 +149,7 @@ class Rega {
             } else {
                 res.forEach((prg, index) => {
                     prg.name = unescape(prg.name);
+                    prg.info = unescape(prg.info);
                     res[index] = prg;
                 });
                 callback(null, res);

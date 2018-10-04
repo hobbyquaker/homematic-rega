@@ -133,7 +133,17 @@ class Rega {
      * @param {Rega~programsCallback} callback
      */
     getPrograms(callback) {
-        this._jsonScript(path.join(__dirname, 'scripts', 'programs.rega'), callback);
+        this._jsonScript(path.join(__dirname, 'scripts', 'programs.rega'), (err, res) => {
+            if (err) {
+                callback(err, res);
+            } else {
+                res.forEach((prg, index) => {
+                    prg.name = unescape(prg.name);
+                    res[index] = prg;
+                });
+                callback(null, res);
+            }
+        });
     }
 
     _getTranslations(callback) {

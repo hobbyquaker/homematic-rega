@@ -115,7 +115,17 @@ class Rega {
      * @param {Rega~channelCallback} callback
      */
     getChannels(callback) {
-        this._jsonScript(path.join(__dirname, 'scripts', 'channels.rega'), callback);
+        this._jsonScript(path.join(__dirname, 'scripts', 'channels.rega'), (err, res) => {
+            if (err) {
+                callback(err, res);
+            } else {
+                res.forEach((channel, index) => {
+                    channel.name = unescape(channel.name);
+                    res[index] = channel;
+                });
+                callback(null, res);
+            }
+        });
     }
 
     /**

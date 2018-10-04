@@ -25,12 +25,16 @@ foreach (sDevId, root.Devices().EnumUsedIDs()) {
             WriteLine(',');
         }
 
-        Write('{"id": ' # sDevId # ', "address": "' # oDevice.Address() # '", "name": "' # oDevice.Name() # '"}');
+        Write('{"id": ' # sDevId # ', "address": "' # oDevice.Address() # '", "name": "');
+        WriteURL(oDevice.Name());
+        Write('"}');
 
         foreach(sChnId, oDevice.Channels()) {
             object oChannel = dom.GetObject(sChnId);
             WriteLine(',');
-            Write('{"id": ' # sChnId # ', "address": "' # oChannel.Address() # '", "name":"' # oChannel.Name() # '"}');
+            Write('{"id": ' # sChnId # ', "address": "' # oChannel.Address() # '", "name":"');
+            WriteURL(oChannel.Name());
+            Write('"}');
         }
 
     }

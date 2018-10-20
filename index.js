@@ -103,7 +103,7 @@ class Rega {
                 try {
                     callback(null, JSON.parse(res));
                 } catch (error) {
-                    callback(error);
+                    callback(new Error('JSON.parse failed ' + file));
                 }
             }
         });

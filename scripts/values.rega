@@ -34,22 +34,30 @@ foreach (sDevId, root.Devices().EnumUsedIDs()) {
                     WriteLine(',');
                 }
 
+                Write('{"name": "');
+                WriteURL(oDP.Name());
+                Write('", "value": ');
+
                 if (type == 20) {
-                    Write('{"name": "' # oDP.Name() # '", "value": "' # value # '", "ts": "' # oDP.Timestamp() # '"}');
+                    Write('"');
+                    WriteURL(value);
+                    Write('"');
                 } else {
                     if (type == 2) {
                         if (value) {
-                            Write('{"name": "' # oDP.Name() # '", "value": true, "ts": "' # oDP.Timestamp() # '"}');
+                            Write('true');
                         } else {
-                            Write('{"name": "' # oDP.Name() # '", "value": false, "ts": "' # oDP.Timestamp() # '"}');
+                            Write('false');
                         }
                     } else {
                         if (value == '') {
                           value = 0;
                         }
-                        Write('{"name": "' # oDP.Name() # '", "value": ' # value # ', "ts": "' # oDP.Timestamp() # '"}');
+                        Write(value);
                     }
                 }
+
+                Write(', "ts": "' # oDP.Timestamp() # '"}')
             }
         }
     }

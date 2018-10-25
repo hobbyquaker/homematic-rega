@@ -134,7 +134,20 @@ class Rega {
      * @param {Rega~valuesCallback} callback
      */
     getValues(callback) {
-        this._jsonScript(path.join(__dirname, 'scripts', 'values.rega'), callback);
+        this._jsonScript(path.join(__dirname, 'scripts', 'values.rega'), (err, res) => {
+            if (err) {
+                callback(err, res);
+            } else {
+                res.forEach((ch, index) => {
+                    ch.name = unescape(ch.name);
+                    if (typeof ch.value === 'string') {
+                        ch.value = unescape(ch.value);
+                    }
+                    res[index] = ch;
+                });
+                callback(null, res);
+            }
+        });
     }
 
     /**

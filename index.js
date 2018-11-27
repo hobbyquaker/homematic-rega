@@ -34,13 +34,17 @@ class Rega {
             const outputEnd = res.lastIndexOf('<xml>');
             const output = res.substr(0, outputEnd);
             const xml = res.substr(outputEnd);
-            parseXml(xml, {explicitArray: false}, (err, res) => {
-                if (err) {
-                    callback(err, output);
-                } else {
-                    callback(null, output, res.xml);
-                }
-            });
+            if (xml) {
+                parseXml(xml, {explicitArray: false}, (err, res) => {
+                    if (err) {
+                        callback(err, output);
+                    } else {
+                        callback(null, output, res.xml);
+                    }
+                });
+            } else {
+                callback(new Error('xml in rega response missing'));
+            }
         } else {
             callback(new Error('empty rega response'));
         }

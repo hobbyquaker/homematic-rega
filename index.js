@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
+const tempDir = require('temp-dir');
 const request = require('request');
 const iconv = require('iconv-lite');
 const parseXml = require('xml2js').parseString;
@@ -107,7 +108,9 @@ class Rega {
                 try {
                     callback(null, JSON.parse(res));
                 } catch (error) {
-                    callback(new Error('JSON.parse failed ' + file));
+                    const debugFile = path.join(tempDir, file + '.failed.json');
+                    fs.writeFile(debugFile, res, () => {});
+                    callback(new Error('JSON.parse failed. Saved debug data to ' + debugFile));
                 }
             }
         });

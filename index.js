@@ -31,20 +31,27 @@ class Rega {
      */
 
     _parseResponse(res, callback) {
-        if (res && res.match(/xml/)) {
+        const ERROR_XML_MISSING = new Error('xml in rega response missing');
+        if (res) {
             const outputEnd = res.lastIndexOf('<xml>');
-            const output = res.substr(0, outputEnd);
-            const xml = res.substr(outputEnd);
-            if (xml) {
-                parseXml(xml, {explicitArray: false}, (err, res) => {
-                    if (err) {
-                        callback(err, output);
-                    } else {
-                        callback(null, output, res.xml);
-                    }
-                });
+            if (outputEnd === -1) {
+                callback(ERROR_XML_MISSING);
             } else {
-                callback(new Error('xml in rega response missing'));
+                const output = res.substr(0, outputEnd);
+                const xml = res.substr(outputEnd);
+                if (xml) {
+                    parseXml(xml, {explicitArray: false}, (err, res) => {
+                        if (err) {
+                            callback(err, output);
+                        } else if (res) {
+                            callback(null, output, res.xml);
+                        } else {
+                            callback(ERROR_XML_MISSING);
+                        }
+                    });
+                } else {
+                    callback(ERROR_XML_MISSING);
+                }
             }
         } else {
             callback(new Error('empty rega response'));

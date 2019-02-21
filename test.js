@@ -1,7 +1,8 @@
 const Rega = require('./index.js');
-const rega = new Rega({host: 'homematic-ccu3', disableTranslation: false});
+const rega = new Rega({host: 'homematic-raspi', disableTranslation: false});
 
 
+/*
 rega.exec('string x = "Hello";\nWriteLine(x # " World!");', (err, output, objects) => {
     if (err) {
         throw err;
@@ -33,4 +34,9 @@ rega.exec('string x = "Hello";\nWriteLine(x # " World!");', (err, output, object
 
     });
 
+});
+*/
+
+rega.getVariables((err, res) => {
+    console.log('getVariables', err, res);
 });

@@ -21,7 +21,7 @@ foreach (sDevId, root.Devices().EnumUsedIDs()) {
 
     if (bDevReady) {
 
-        foreach(sChnId, oDevice.Channels().EnumUsedIDs()) {
+        foreach(sChnId, oDevice.Channels()) {
             object oChannel = dom.GetObject(sChnId);
             foreach(sDPId, oChannel.DPs().EnumUsedIDs()) {
                 object oDP = dom.GetObject(sDPId);

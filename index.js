@@ -68,6 +68,7 @@ class Rega {
         if (typeof callback !== 'function') {
             callback = () => {};
         }
+
         script = iconv.encode(script, this.encoding);
         request({
             method: 'POST',
@@ -157,6 +158,7 @@ class Rega {
                     if (typeof ch.value === 'string') {
                         ch.value = unescape(ch.value);
                     }
+
                     res[index] = ch;
                 });
                 callback(null, res);
@@ -195,6 +197,7 @@ class Rega {
             if (!err && body) {
                 this._parseTranslations(iconv.decode(body, this.encoding));
             }
+
             callback();
         });
     }
@@ -215,10 +218,12 @@ class Rega {
             if (key.startsWith('${') && key.endsWith('}')) {
                 key = key.substr(2, item.length - 3);
             }
+
             if (this.translations[key]) {
                 item = this.translations[key];
             }
         }
+
         return item;
     }
 
@@ -232,6 +237,7 @@ class Rega {
                 }
             });
         }
+
         return res;
     }
 
@@ -241,6 +247,7 @@ class Rega {
                 values[i] = this._translate(val);
             });
         }
+
         return values;
     }
 
@@ -274,11 +281,13 @@ class Rega {
                     if (sysvar.type === 'string') {
                         sysvar.val = unescape(sysvar.val);
                     }
+
                     if (sysvar.enum === '') {
                         sysvar.enum = [];
                     } else {
                         sysvar.enum = this._translateEnum(unescape(sysvar.enum).split(';'));
                     }
+
                     res[index] = sysvar;
                 });
                 callback(null, res);

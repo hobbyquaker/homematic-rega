@@ -116,7 +116,7 @@ class Rega {
                 try {
                     callback(null, JSON.parse(res));
                 } catch (error) {
-                    const debugFile = path.join(tempDir, file + '.failed.json');
+                    const debugFile = path.join(tempDir, path.basename(file) + '.failed.json');
                     fs.writeFile(debugFile, res, () => {});
                     callback(new Error('JSON.parse failed. Saved debug data to ' + debugFile));
                 }

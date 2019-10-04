@@ -12,15 +12,41 @@ class Rega {
      * @param {string} options.host - hostname or IP address of the Homematic CCU
      * @param {string} [options.language=de] - language used for translation of placeholders in variables/rooms/functions
      * @param {boolean} [options.disableTranslation=false] - disable translation of placeholders
-     * @param {number} [options.port=8181] - rega remote script port
+     * @param {boolean} [options.tls=false] - Connect using TLS
+     * @param {boolean} [options.inSecure=false] - Ignore invalid TLS Certificates
+     * @param {boolean} [options.auth=false] - Use Basic Authentication
+     * @param {string} [options.user] - Auth Username
+     * @param {string} [options.pass] - Auth Password
+     * @param {number} [options.port=8181] - rega remote script port. Defaults to 48181 if options.tls is true
      */
     constructor(options) {
         this.language = options.language || 'de';
         this.disableTranslation = options.disableTranslation;
         this.host = options.host;
-        this.port = options.port || 8181;
-        this.url = 'http://' + this.host + ':' + this.port + '/rega.exe';
+        this.tls = options.tls;
+        this.port = options.port || (this.tls ? 48181 : 8181);
+        this.inSecure = options.inSecure;
+        this.auth = options.auth;
+        this.user = options.user;
+        this.pass = options.pass;
+        this.url = (this.tls ? 'https' : 'http') + '://' + this.host + ':' + this.port + '/rega.exe';
         this.encoding = 'iso-8859-1';
+        this.requestOptions = {
+            method: 'POST',
+            url: this.url,
+            encoding: null
+        };
+        if (this.auth) {
+            this.requestOptions.auth = {
+                user: this.user,
+                pass: this.pass,
+                sendImmediately: true
+            };
+        }
+
+        if (this.tls) {
+            this.requestOptions.strictSSL = !this.inSecure;
+        }
     }
 
     /**
@@ -70,19 +96,20 @@ class Rega {
         }
 
         script = iconv.encode(script, this.encoding);
-        request({
-            method: 'POST',
-            url: this.url,
-            encoding: null,
+        request(Object.assign(this.requestOptions, {
             body: script,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Content-Length': script.length
             }
-        }, (err, res, body) => {
+        }), (err, res, body) => {
             if (!err && body) {
-                body = iconv.decode(body, this.encoding);
-                this._parseResponse(body, callback);
+                if (res.statusCode === 401) {
+                    callback(new Error('401 Unauthorized'));
+                } else {
+                    body = iconv.decode(body, this.encoding);
+                    this._parseResponse(body, callback);
+                }
             } else {
                 callback(err);
             }

@@ -89,7 +89,12 @@ rega.getVariables((err, res) => {
 | options.host | <code>string</code> |  | hostname or IP address of the Homematic CCU |
 | [options.language] | <code>string</code> | <code>&quot;de&quot;</code> | language used for translation of placeholders in variables/rooms/functions |
 | [options.disableTranslation] | <code>boolean</code> | <code>false</code> | disable translation of placeholders |
-| [options.port] | <code>number</code> | <code>8181</code> | rega remote script port |
+| [options.tls] | <code>boolean</code> | <code>false</code> | Connect using TLS |
+| [options.inSecure] | <code>boolean</code> | <code>false</code> | Ignore invalid TLS Certificates |
+| [options.auth] | <code>boolean</code> | <code>false</code> | Use Basic Authentication |
+| [options.user] | <code>string</code> |  | Auth Username |
+| [options.pass] | <code>string</code> |  | Auth Password |
+| [options.port] | <code>number</code> | <code>8181</code> | rega remote script port. Defaults to 48181 if options.tls is true |
 
 <a name="Rega+exec"></a>
 

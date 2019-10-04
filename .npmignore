@@ -3,3 +3,4 @@
 test.js
 .travis.yml
 readme/*
+testAuth.js

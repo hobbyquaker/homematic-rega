@@ -1,5 +1,8 @@
 const Rega = require('./index.js');
-const rega = new Rega({host: 'homematic-ccu3', disableTranslation: false});
+const rega = new Rega({
+    host: 'homematic-raspi',
+    disableTranslation: false
+});
 
 
 /*
@@ -38,7 +41,7 @@ rega.exec('string x = "Hello";\nWriteLine(x # " World!");', (err, output, object
 
 
 
-*/
+
 
 rega.getChannels((err, res) => {
     console.log(err);
@@ -51,5 +54,14 @@ rega.getChannels((err, res) => {
 });
 
 
+rega.getVariables((err, res) => {
+    console.log('getVariables', err, res);
+});
 
 
+*/
+
+rega.getRooms((err, res) => {
+    console.log(err,res);
+   // require('fs').writeFileSync('values.json', JSON.stringify(res, null, '  '));
+});

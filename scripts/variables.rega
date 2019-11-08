@@ -55,19 +55,15 @@ foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
         }
     }
 
-    string sValueMin = oSysVar.ValueMin();
-    if (sValueMin == '') {
-        sValueMin = 'null';
-    }
-
-    string sValueMax = oSysVar.ValueMax();
-    if (sValueMax == '') {
-        sValueMax = 'null';
+    string sValueMin = 'null';
+    string sValueMax = 'null';
+    if (sValueType == 4) {
+        sValueMin = oSysVar.ValueMin();
+        sValueMax = oSysVar.ValueMax();
     }
 
     Write(',"ts":"' # oSysVar.Timestamp());
     Write('","min":' # sValueMin # ',"max":' # sValueMax # ',"unit":"' # oSysVar.ValueUnit() # '"');
-
     if (sValueType == 2) {
         Write(', "type": "boolean", "enum": "');
         WriteURL(oSysVar.ValueName0());
@@ -89,3 +85,5 @@ foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
 }
 
 Write(']');
+
+

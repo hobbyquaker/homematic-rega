@@ -63,8 +63,8 @@ class Rega {
             if (outputEnd === -1) {
                 callback(ERROR_XML_MISSING);
             } else {
-                const output = res.substr(0, outputEnd);
-                const xml = res.substr(outputEnd);
+                const output = res.slice(0, outputEnd);
+                const xml = res.slice(outputEnd);
                 if (xml) {
                     parseXml(xml, {explicitArray: false}, (err, res) => {
                         if (err) {
@@ -142,7 +142,7 @@ class Rega {
             } else {
                 try {
                     callback(null, JSON.parse(res));
-                } catch (error) {
+                } catch (_) {
                     const debugFile = path.join(tempDir, path.basename(file) + '.failed.json');
                     fs.writeFile(debugFile, res, () => {});
                     callback(new Error('JSON.parse failed. Saved debug data to ' + debugFile));
@@ -243,7 +243,7 @@ class Rega {
         if (!this.disableTranslation) {
             let key = item;
             if (key.startsWith('${') && key.endsWith('}')) {
-                key = key.substr(2, item.length - 3);
+                key = key.slice(2, item.length - 3);
             }
 
             if (this.translations[key]) {

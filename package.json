@@ -1,6 +1,6 @@
 {
   "name": "homematic-rega",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Homematic CCU ReGaHSS Remote Script Interface",
   "main": "index.js",
   "engines": {
@@ -34,7 +34,7 @@
     "iconv-lite": "^0.5.0",
     "request": "^2.88.0",
     "temp-dir": "^2.0.0",
-    "xml2js": "^0.4.22"
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "camo-purge": "latest",

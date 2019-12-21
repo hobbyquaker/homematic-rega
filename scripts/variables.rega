@@ -2,7 +2,7 @@
 !#
 !# Dieses Script gibt die Systemvariablen im JSON Format aus
 !#
-!# 3'2013-9'2017 hobbyquaker https://github.com/hobbyquaker
+!# 3'2013-12'2019 hobbyquaker https://github.com/hobbyquaker
 !#
 
 object oSysVar;
@@ -21,8 +21,8 @@ if (msgs == '') {
 }
 
 Write('[');
-WriteLine('{"id": 40, "name": "Alarmmeldungen", "val": ' # alarms # ', "min": 0, "max": 65000, "unit": "", "type": "number", "enum": ""},');
-Write('{"id": 41, "name": "Servicemeldungen", "val": ' # msgs # ', "min": 0, "max": 65000, "unit": "", "type": "number", "enum": ""}');
+WriteLine('{"id": 40, "name": "Alarmmeldungen", "val": ' # alarms # ', "unit": "", "type": "number", "enum": ""},');
+Write('{"id": 41, "name": "Servicemeldungen", "val": ' # msgs # ', "unit": "", "type": "number", "enum": ""}');
 
 foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
     WriteLine(',');
@@ -55,15 +55,8 @@ foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
         }
     }
 
-    string sValueMin = 'null';
-    string sValueMax = 'null';
-    if (sValueType == 4) {
-        sValueMin = oSysVar.ValueMin();
-        sValueMax = oSysVar.ValueMax();
-    }
-
     Write(',"ts":"' # oSysVar.Timestamp());
-    Write('","min":' # sValueMin # ',"max":' # sValueMax # ',"unit":"' # oSysVar.ValueUnit() # '"');
+    Write('","unit":"' # oSysVar.ValueUnit() # '"');
     if (sValueType == 2) {
         Write(', "type": "boolean", "enum": "');
         WriteURL(oSysVar.ValueName0());

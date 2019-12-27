@@ -243,7 +243,7 @@ class Rega {
         if (!this.disableTranslation) {
             let key = item;
             if (key.startsWith('${') && key.endsWith('}')) {
-                key = key.slice(2, item.length - 3);
+                key = key.slice(2, item.length - 1);
             }
 
             if (this.translations[key]) {

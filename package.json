@@ -1,6 +1,6 @@
 {
   "name": "homematic-rega",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Homematic CCU ReGaHSS Remote Script Interface",
   "main": "index.js",
   "engines": {
@@ -31,8 +31,8 @@
   },
   "homepage": "https://github.com/hobbyquaker/homematic-rega#readme",
   "dependencies": {
-    "iconv-lite": "^0.5.0",
-    "request": "^2.88.0",
+    "iconv-lite": "^0.6.2",
+    "request": "^2.88.2",
     "temp-dir": "^2.0.0",
     "xml2js": "^0.4.23"
   },

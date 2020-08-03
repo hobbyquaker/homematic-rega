@@ -55,8 +55,8 @@ foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
         }
     }
 
-    Write(',"ts":"' # oSysVar.Timestamp());
-    Write('","unit":"' # oSysVar.ValueUnit() # '"');
+    Write(', "ts": "' # oSysVar.Timestamp());
+    Write('", "unit": "' # oSysVar.ValueUnit() # '"');
     if (sValueType == 2) {
         Write(', "type": "boolean", "enum": "');
         WriteURL(oSysVar.ValueName0());

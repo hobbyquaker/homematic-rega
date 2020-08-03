@@ -4,7 +4,7 @@
   "description": "Homematic CCU ReGaHSS Remote Script Interface",
   "main": "index.js",
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "engineStrict": true,
   "scripts": {
@@ -45,6 +45,9 @@
     "space": 4,
     "ignore": [
       "test.js"
-    ]
+    ],
+    "rules":  {
+      "unicorn/prevent-abbreviations": "warn"
+    }
   }
 }

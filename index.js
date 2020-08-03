@@ -144,7 +144,7 @@ class Rega {
                 res = res.replace(/, "val": nan,/g, ', "val": null,');
                 try {
                     callback(null, JSON.parse(res));
-                } catch (_) {
+                } catch {
                     const debugFile = path.join(tempDir, path.basename(file) + '.failed.json');
                     fs.writeFile(debugFile, res, () => {});
                     callback(new Error('JSON.parse failed. Saved debug data to ' + debugFile));
@@ -259,10 +259,10 @@ class Rega {
     _translateNames(res) {
         if (!this.disableTranslation) {
             Object.keys(res).forEach(id => {
-                const obj = res[id];
-                obj.name = this._translate(unescape(obj.name));
-                if (obj.info) {
-                    obj.info = this._translate(unescape(obj.info));
+                const object = res[id];
+                object.name = this._translate(unescape(object.name));
+                if (object.info) {
+                    object.info = this._translate(unescape(object.info));
                 }
             });
         }
@@ -272,8 +272,8 @@ class Rega {
 
     _translateEnum(values) {
         if (!this.disableTranslation) {
-            values.forEach((val, i) => {
-                values[i] = this._translate(val);
+            values.forEach((value, i) => {
+                values[i] = this._translate(value);
             });
         }
 
@@ -349,8 +349,8 @@ class Rega {
      * @param {number|boolean|string} val
      * @param {function} [callback]
      */
-    setVariable(id, val, callback) {
-        const script = 'dom.GetObject(' + id + ').State(' + JSON.stringify(val) + ');';
+    setVariable(id, value, callback) {
+        const script = 'dom.GetObject(' + id + ').State(' + JSON.stringify(value) + ');';
         this.exec(script, callback);
     }
 

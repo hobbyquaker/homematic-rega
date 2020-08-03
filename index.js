@@ -140,6 +140,8 @@ class Rega {
             if (err) {
                 callback(err);
             } else {
+                // Todo: remove ugly workaround for https://github.com/rdmtc/RedMatic/issues/381
+                res = res.replace(/, "val": nan,/g, ', "val": null,');
                 try {
                     callback(null, JSON.parse(res));
                 } catch (_) {

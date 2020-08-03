@@ -2,7 +2,7 @@
 !#
 !# Dieses Script gibt die Systemvariablen im JSON Format aus
 !#
-!# 3'2013-12'2019 hobbyquaker https://github.com/hobbyquaker
+!# 3'2013-7'2020 hobbyquaker https://github.com/hobbyquaker
 !#
 
 object oSysVar;

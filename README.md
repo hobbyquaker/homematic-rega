@@ -1,268 +1,108 @@
 # homematic-rega
 
 [![NPM version](https://badge.fury.io/js/homematic-rega.svg)](http://badge.fury.io/js/homematic-rega)
-[![dependencies Status](https://david-dm.org/hobbyquaker/homematic-rega/status.svg)](https://david-dm.org/hobbyquaker/homematic-rega)
-[![Build Status](https://travis-ci.org/hobbyquaker/homematic-rega.svg?branch=master)](https://travis-ci.org/hobbyquaker/homematic-rega)
-[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
-[![License][mit-badge]][mit-url]
+[![CI](https://github.com/hobbyquaker/homematic-rega/actions/workflows/ci.yml/badge.svg)](https://github.com/hobbyquaker/homematic-rega/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](LICENSE)
 
-> Node.js Homematic CCU ReGaHSS Remote Script Interface
+> Node.js Homematic CCU ReGaHSS remote script interface
 
-This module encapsulates the communication with the "ReGaHSS" - the logic layer of the Homematic CCU. 
+This module encapsulates the communication with the "ReGaHSS" — the logic layer of the Homematic
+CCU — through its remote script endpoint (`rega.exe`). ES module, promise API, no dependencies,
+Node.js >= 20.
 
-* execute arbitrary scripts
-* get names and ids of devices and channels
-* get variables including their value und meta data
-* set variable values
-* get programs
-* execute programs
-* activate/deactivate programs
-* get rooms and functions including assigned channels
-* rename objects
+- execute arbitrary scripts and read back the script's variables
+- get names and ids of devices and channels
+- get the current values of all datapoints
+- get variables including value and meta data, set variables
+- get programs, execute and activate/deactivate them
+- get rooms and functions including assigned channels
+- rename objects
 
-i18n placeholders (e.g. `${roomKitchen}`) are translated by default.
-
-You can find offical and inoffical documentation of the homematic scripting language at 
+`${...}` i18n placeholders (e.g. `${roomKitchen}`) are translated by default. Official and
+inofficial documentation of the scripting language:
 [wikimatic.de](http://www.wikimatic.de/wiki/Script_Dokumentation).
-
-Pull Requests welcome! :)
-
 
 ## Install
 
-`$ npm install homematic-rega`
+```
+npm install homematic-rega
+```
 
+## Usage
 
-## Usage Example
-
-```javascript
-const Rega = require('homematic-rega');
+```js
+import {Rega} from 'homematic-rega';
 
 const rega = new Rega({host: '192.168.2.105'});
 
-rega.exec('string x = "Hello";\nWriteLine(x # " World!");', (err, output, objects) => {
-    if (err) {
-        throw err;
-    } 
-    console.log('Output:', output);
-    console.log('Objects:', objects);
-});
+const {output, objects} = await rega.exec('string x = "Hello";\nWriteLine(x # " World!");');
+console.log(output); // "Hello World!\n"
+console.log(objects); // {exec: '/rega.exe', sessionId: '', httpUserAgent: '', x: 'Hello'}
 
-rega.getVariables((err, res) => {
-    console.log(res);
-});
+const variables = await rega.getVariables();
 ```
 
+## Options
+
+| option      | default              | description                                                             |
+| ----------- | -------------------- | ----------------------------------------------------------------------- |
+| `host`      | —                    | hostname or IP address of the CCU (required)                            |
+| `port`      | `8181` (`48181` tls) | rega remote script port                                                 |
+| `tls`       | `false`              | connect using TLS                                                       |
+| `insecure`  | `false`              | accept invalid/self-signed TLS certificates                             |
+| `username`  | —                    | CCU user for basic authentication (with `password`)                     |
+| `language`  | `'de'`               | language of the placeholder translations                                |
+| `translate` | `true`               | translate `${...}` placeholders in names of variables, rooms, functions |
+| `timeout`   | `30000`              | request timeout in ms                                                   |
+| `timeZone`  | local time           | IANA time zone of the CCU, used to convert timestamps                   |
+| `webPort`   | `80` (`443` tls)     | port of the CCU web UI, where the translations are downloaded from      |
 
 ## API
 
-<a name="Rega"></a>
+All methods return Promises.
 
-## Rega
-**Kind**: global class  
+| method                   | resolves to                                                                                                                                  |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `exec(script)`           | `{output, objects}` — the script's output and every variable set in the script (strings)                                                     |
+| `script(file)`           | same, for a script file (UTF-8)                                                                                                              |
+| `getChannels()`          | `[{id, address, name}]` — devices and channels                                                                                               |
+| `getValues()`            | `[{name, value, ts}]` — every datapoint, `name` = `<interface>.<channel>.<datapoint>`                                                        |
+| `getVariables()`         | `[{id, name, info, val, ts, unit, type, enum, channel}]` — `type` is `boolean`/`number`/`string`, `enum` an array, `channel` an id or `null` |
+| `getPrograms()`          | `[{id, name, info, active, ts}]` — `ts` = last execution                                                                                     |
+| `getRooms()`             | `[{id, name, channels}]` — `channels` are channel ids                                                                                        |
+| `getFunctions()`         | `[{id, name, channels}]`                                                                                                                     |
+| `setVariable(id, value)` | `{output, objects}`                                                                                                                          |
+| `startProgram(id)`       |                                                                                                                                              |
+| `setProgram(id, active)` |                                                                                                                                              |
+| `setName(id, name)`      |                                                                                                                                              |
 
-* [Rega](#Rega)
-    * [new Rega(options)](#new_Rega_new)
-    * _instance_
-        * [.exec(script, [callback])](#Rega+exec)
-        * [.script(file, [callback])](#Rega+script)
-        * [.getChannels(callback)](#Rega+getChannels)
-        * [.getValues(callback)](#Rega+getValues)
-        * [.getPrograms(callback)](#Rega+getPrograms)
-        * [.getVariables(callback)](#Rega+getVariables)
-        * [.getRooms(callback)](#Rega+getRooms)
-        * [.getFunctions(callback)](#Rega+getFunctions)
-        * [.setVariable(id, val, [callback])](#Rega+setVariable)
-        * [.startProgram(id, [callback])](#Rega+startProgram)
-        * [.setProgram(id, active, [callback])](#Rega+setProgram)
-        * [.setName(id, name, [callback])](#Rega+setName)
-    * _inner_
-        * [~scriptCallback](#Rega..scriptCallback) : <code>function</code>
+Timestamps (`ts`) are epoch milliseconds; `0` means "never" (the CCU's `1970-01-01 01:00:00`).
+They are converted from the CCU's local time — set `timeZone` when the CCU is not in the time
+zone of the process. Text is decoded as ISO-8859-1, which is what the ReGaHSS speaks.
 
-<a name="new_Rega_new"></a>
+Exported helpers: `parseResponse(body)`, `parseTimestamp(string, timeZone)`, `unescapeLatin1(string)`.
 
-### new Rega(options)
+## Migration from 1.x
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| options | <code>object</code> |  |  |
-| options.host | <code>string</code> |  | hostname or IP address of the Homematic CCU |
-| [options.language] | <code>string</code> | <code>&quot;de&quot;</code> | language used for translation of placeholders in variables/rooms/functions |
-| [options.disableTranslation] | <code>boolean</code> | <code>false</code> | disable translation of placeholders |
-| [options.tls] | <code>boolean</code> | <code>false</code> | Connect using TLS |
-| [options.inSecure] | <code>boolean</code> | <code>false</code> | Ignore invalid TLS Certificates |
-| [options.auth] | <code>boolean</code> | <code>false</code> | Use Basic Authentication |
-| [options.user] | <code>string</code> |  | Auth Username |
-| [options.pass] | <code>string</code> |  | Auth Password |
-| [options.port] | <code>number</code> | <code>8181</code> | rega remote script port. Defaults to 48181 if options.tls is true |
-
-<a name="Rega+exec"></a>
-
-### rega.exec(script, [callback])
-Execute a rega script
-
-**Kind**: instance method of [<code>Rega</code>](#Rega)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| script | <code>string</code> | string containing a rega script |
-| [callback] | [<code>scriptCallback</code>](#Rega..scriptCallback) |  |
-
-<a name="Rega+script"></a>
-
-### rega.script(file, [callback])
-Execute a rega script from a file
-
-**Kind**: instance method of [<code>Rega</code>](#Rega)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| file | <code>string</code> | path to script file |
-| [callback] | [<code>scriptCallback</code>](#Rega..scriptCallback) |  |
-
-<a name="Rega+getChannels"></a>
-
-### rega.getChannels(callback)
-Get all devices and channels
-
-**Kind**: instance method of [<code>Rega</code>](#Rega)  
-
-| Param | Type |
-| --- | --- |
-| callback | <code>Rega~channelCallback</code> | 
-
-<a name="Rega+getValues"></a>
-
-### rega.getValues(callback)
-Get all devices and channels values
-
-**Kind**: instance method of [<code>Rega</code>](#Rega)  
-
-| Param | Type |
-| --- | --- |
-| callback | <code>Rega~valuesCallback</code> | 
-
-<a name="Rega+getPrograms"></a>
-
-### rega.getPrograms(callback)
-Get all programs
-
-**Kind**: instance method of [<code>Rega</code>](#Rega)  
-
-| Param | Type |
-| --- | --- |
-| callback | <code>Rega~programsCallback</code> | 
-
-<a name="Rega+getVariables"></a>
-
-### rega.getVariables(callback)
-Get all variables
-
-**Kind**: instance method of [<code>Rega</code>](#Rega)  
-
-| Param | Type |
-| --- | --- |
-| callback | <code>Rega~variablesCallback</code> | 
-
-<a name="Rega+getRooms"></a>
-
-### rega.getRooms(callback)
-Get all rooms
-
-**Kind**: instance method of [<code>Rega</code>](#Rega)  
-
-| Param | Type |
-| --- | --- |
-| callback | <code>Rega~roomsCallback</code> | 
-
-<a name="Rega+getFunctions"></a>
-
-### rega.getFunctions(callback)
-Get all functions
-
-**Kind**: instance method of [<code>Rega</code>](#Rega)  
-
-| Param | Type |
-| --- | --- |
-| callback | <code>Rega~functionsCallback</code> | 
-
-<a name="Rega+setVariable"></a>
-
-### rega.setVariable(id, val, [callback])
-Set a variables value
-
-**Kind**: instance method of [<code>Rega</code>](#Rega)  
-
-| Param | Type |
-| --- | --- |
-| id | <code>number</code> | 
-| val | <code>number</code> \| <code>boolean</code> \| <code>string</code> | 
-| [callback] | <code>function</code> | 
-
-<a name="Rega+startProgram"></a>
-
-### rega.startProgram(id, [callback])
-Execute a program
-
-**Kind**: instance method of [<code>Rega</code>](#Rega)  
-
-| Param | Type |
-| --- | --- |
-| id | <code>number</code> | 
-| [callback] | <code>function</code> | 
-
-<a name="Rega+setProgram"></a>
-
-### rega.setProgram(id, active, [callback])
-Activate/Deactivate a program
-
-**Kind**: instance method of [<code>Rega</code>](#Rega)  
-
-| Param | Type |
-| --- | --- |
-| id | <code>number</code> | 
-| active | <code>boolean</code> | 
-| [callback] | <code>function</code> | 
-
-<a name="Rega+setName"></a>
-
-### rega.setName(id, name, [callback])
-Rename an object
-
-**Kind**: instance method of [<code>Rega</code>](#Rega)  
-
-| Param | Type |
-| --- | --- |
-| id | <code>number</code> | 
-| name | <code>string</code> | 
-| [callback] | <code>function</code> | 
-
-<a name="Rega..scriptCallback"></a>
-
-### Rega~scriptCallback : <code>function</code>
-**Kind**: inner typedef of [<code>Rega</code>](#Rega)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| err | <code>Error</code> |  |
-| output | <code>string</code> | the scripts output |
-| variables | <code>Object.&lt;string, string&gt;</code> | contains all variables that are set in the script (as strings) |
-
+| 1.x                                         | 2.0                                                 |
+| ------------------------------------------- | --------------------------------------------------- |
+| `const Rega = require('homematic-rega')`    | `import {Rega} from 'homematic-rega'`               |
+| `rega.exec(script, (err, output, objects))` | `const {output, objects} = await rega.exec(script)` |
+| `rega.getVariables((err, res))` etc.        | `await rega.getVariables()`                         |
+| `{inSecure, auth, user, pass}`              | `{insecure, username, password}`                    |
+| `{disableTranslation: true}`                | `{translate: false}`                                |
+| `ts: '2026-01-15 12:00:00'`                 | `ts: 1768478400000` (ms), `timeZone` option         |
+| `enum: ''`/`'a;b'`, `channel: ''`/`'1234'`  | `enum: []`/`['a', 'b']`, `channel: null`/`1234`     |
 
 ## Related projects
 
-* [node-red-contrib-ccu](https://github.com/hobbyquaker/node-red-contrib-ccu) - Node-RED nodes for the Homematic CCU.
-* [homematic-manager](https://github.com/hobbyquaker/homematic-manager) - Cross-platform App to manage Homematic devices 
-and links.
-* [hm2mqtt.js](https://github.com/hobbyquaker/hm2mqtt.js) - Interface between Homematic and MQTT.
-* [binrpc](https://github.com/hobbyquaker/binrpc) - Node.js client/server for the Homematic BINRPC protocol.
-* [homematic-xmlrpc](https://github.com/hobbyquaker/homematic-xmlrpc) - Node.js client/server for the Homematic XMLRPC 
-protocol.
-
+- [node-red-contrib-ccu](https://github.com/rdmtc/node-red-contrib-ccu) — Node-RED nodes for the Homematic CCU
+- [hm2mqtt](https://github.com/hobbyquaker/hm2mqtt.js) — interface between Homematic and MQTT
+- [binrpc](https://github.com/hobbyquaker/binrpc) — Node.js client/server for the Homematic BINRPC protocol
+- [homematic-xmlrpc](https://github.com/hobbyquaker/homematic-xmlrpc) — Node.js client/server for the Homematic XMLRPC protocol
 
 ## License
 
 MIT (c) Sebastian Raff
 
-[mit-badge]: https://img.shields.io/badge/License-MIT-blue.svg?style=flat
-[mit-url]: LICENSE
+Changes per release: [CHANGELOG.md](CHANGELOG.md).

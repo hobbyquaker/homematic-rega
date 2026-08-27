@@ -1,21 +1,7 @@
 {
   "name": "homematic-rega",
-  "version": "1.5.2",
-  "description": "Homematic CCU ReGaHSS Remote Script Interface",
-  "main": "index.js",
-  "engines": {
-    "node": ">=10.0.0"
-  },
-  "engineStrict": true,
-  "scripts": {
-    "test": "camo-purge ; xo",
-    "lintfix": "xo --fix",
-    "docs": "cat readme/README.header.md > README.md; jsdoc2md index.js >> README.md; cat readme/README.footer.md >> README.md"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hobbyquaker/homematic-rega.git"
-  },
+  "version": "2.0.0",
+  "description": "Homematic CCU ReGaHSS remote script interface",
   "keywords": [
     "eq-3",
     "homematic",
@@ -26,28 +12,34 @@
   ],
   "author": "Sebastian Raff <hobbyquaker@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hobbyquaker/homematic-rega.git"
+  },
+  "homepage": "https://github.com/hobbyquaker/homematic-rega#readme",
   "bugs": {
     "url": "https://github.com/hobbyquaker/homematic-rega/issues"
   },
-  "homepage": "https://github.com/hobbyquaker/homematic-rega#readme",
-  "dependencies": {
-    "iconv-lite": "^0.6.2",
-    "request": "^2.88.2",
-    "temp-dir": "^2.0.0",
-    "xml2js": "^0.4.23"
+  "type": "module",
+  "main": "index.js",
+  "exports": "./index.js",
+  "files": [
+    "index.js",
+    "scripts/"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write . && eslint --fix .",
+    "test": "node --test"
   },
   "devDependencies": {
-    "camo-purge": "latest",
-    "xo": "latest",
-    "jsdoc-to-markdown": "latest"
-  },
-  "xo": {
-    "space": 4,
-    "ignore": [
-      "test.js"
-    ],
-    "rules":  {
-      "unicorn/prevent-abbreviations": "warn"
-    }
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^10.0.0",
+    "globals": "^16.0.0",
+    "prettier": "^3.0.0"
   }
 }

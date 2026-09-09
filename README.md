@@ -56,6 +56,13 @@ const variables = await rega.getVariables();
 | `timeout`   | `30000`              | request timeout in ms                                                   |
 | `timeZone`  | local time           | IANA time zone of the CCU, used to convert timestamps                   |
 | `webPort`   | `80` (`443` tls)     | port of the CCU web UI, where the translations are downloaded from      |
+| `agent`     | no keep-alive        | `http.Agent`/`https.Agent` for the requests, or `false`; see below      |
+
+The default agent does not keep connections alive (`new http.Agent({keepAlive: false})`). Node's
+`http.globalAgent` pools connections since Node 19, and ReGaHSS itself (port 8183 on the CCU) answers
+HTTP/1.1 without `Connection: close` but closes every connection a few milliseconds after the response —
+a request that reuses the pooled socket in that window fails with `socket hang up`. lighttpd on 8181
+handles keep-alive properly; pass your own agent if you want pooling there.
 
 ## API
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.0.1
+
+### Fixed
+
+- Requests no longer go through Node's `http.globalAgent`, which pools connections (`keepAlive: true`
+  since Node 19). ReGaHSS on the CCU's port 8183 answers HTTP/1.1 without `Connection: close` and
+  then closes the connection 0.4–7 ms after the response; a request that reused the pooled socket in
+  that window failed with `socket hang up` / `ECONNRESET` (node-red-contrib-ccu since 4.3.0, which
+  talks to 8183 directly on a CCU: RedMatic #601). Each request now uses its own connection, as 1.x did.
+
+### Added
+
+- `agent` option: an `http.Agent`/`https.Agent` for the requests (or `false`), for those who want
+  pooling against a proxy that supports it, such as lighttpd on 8181.
+
 ## 2.0.0
 
 Rewrite as an ES module with a promise API and no runtime dependencies (`request`, `iconv-lite`,

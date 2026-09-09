@@ -223,3 +223,61 @@ describe('Rega', () => {
         assert.throws(() => new Rega({}), /host is required/);
     });
 });
+
+describe('connection handling against a ReGaHSS-like server', () => {
+    // ReGaHSS itself (port 8183 on the CCU) answers HTTP/1.1 with Content-Length and no Connection
+    // header, then sends FIN 0.4-7 ms after the response and ignores whatever arrives in between
+    // (measured on a CCU3 3.89.8). A keep-alive agent pools that socket and the next request on it
+    // dies with ECONNRESET / "socket hang up" - RedMatic #601, node-red-contrib-ccu B-18.
+    let server;
+    let port;
+    let connections = [];
+
+    before(async () => {
+        server = http.createServer((req, res) => {
+            connections.push(req.headers.connection);
+            req.resume();
+            req.on('end', () => {
+                res.end(latin1('<xml><exec>/rega.exe</exec></xml>'));
+                setImmediate(() => req.socket.destroy());
+            });
+        });
+        await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+        port = server.address().port;
+    });
+
+    after(() => {
+        server.closeAllConnections();
+        server.close();
+    });
+
+    test('default: no keep-alive, every request on its own connection', async () => {
+        connections = [];
+        const r = new Rega({host: '127.0.0.1', port, translate: false});
+        assert.equal(r.agent.keepAlive, false);
+        assert.notEqual(r.agent, http.globalAgent);
+        for (let i = 0; i < 20; i++) {
+            await r.exec('Write("1");');
+        }
+        assert.deepEqual(connections, Array(20).fill('close'));
+    });
+
+    test('agent option: a keep-alive agent reuses the pooled socket and hits the window', async () => {
+        connections = [];
+        const agent = new http.Agent({keepAlive: true});
+        const r = new Rega({host: '127.0.0.1', port, translate: false, agent});
+        assert.equal(r.agent, agent);
+        await r.exec('Write("1");');
+        assert.equal(connections[0], 'keep-alive');
+        await assert.rejects(r.exec('Write("1");'), (err) => err.code === 'ECONNRESET');
+        agent.destroy();
+    });
+
+    test('agent: false uses a fresh default agent per request', async () => {
+        connections = [];
+        const r = new Rega({host: '127.0.0.1', port, translate: false, agent: false});
+        await r.exec('Write("1");');
+        await r.exec('Write("1");');
+        assert.deepEqual(connections, ['close', 'close']);
+    });
+});

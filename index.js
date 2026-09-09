@@ -136,6 +136,10 @@ export class Rega {
      * @param {number} [options.timeout=30000] request timeout in ms
      * @param {string} [options.timeZone] IANA time zone of the CCU for timestamps (default: local time)
      * @param {number} [options.webPort] port of the CCU web UI (translations), default 80 / 443
+     * @param {import('node:http').Agent | false} [options.agent] agent for the requests; default: one
+     *        without keep-alive (`new http.Agent({keepAlive: false})`, `https.Agent` with tls). ReGaHSS
+     *        itself (port 8183) answers HTTP/1.1 without `Connection: close` but closes the connection
+     *        a few milliseconds after every response, so a pooled socket dies with `socket hang up`.
      */
     constructor({
         host,
@@ -149,6 +153,7 @@ export class Rega {
         timeout = 30000,
         timeZone,
         webPort,
+        agent,
     } = {}) {
         if (!host) {
             throw new Error('host is required');
@@ -166,6 +171,9 @@ export class Rega {
         const proto = this.tls ? 'https' : 'http';
         this.url = `${proto}://${host}:${this.port}/rega.exe`;
         this.webUrl = `${proto}://${host}${webPort ? ':' + webPort : ''}`;
+        // Never Node's http.globalAgent: it pools connections (keepAlive: true since Node 19), and
+        // ReGaHSS on 8183 closes each one right after the response without saying so.
+        this.agent = agent === undefined ? new (this.tls ? https : http).Agent({keepAlive: false}) : agent;
         this.translations = null;
         this.translationError = null;
     }
@@ -193,7 +201,7 @@ export class Rega {
             }
             const req = transport.request(
                 u,
-                {method, headers, rejectUnauthorized: !this.insecure, timeout: this.timeout},
+                {method, headers, rejectUnauthorized: !this.insecure, timeout: this.timeout, agent: this.agent},
                 (res) => {
                     const chunks = [];
                     res.on('data', (c) => chunks.push(c));

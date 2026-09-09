@@ -1,6 +1,6 @@
 {
   "name": "homematic-rega",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Homematic CCU ReGaHSS remote script interface",
   "keywords": [
     "eq-3",

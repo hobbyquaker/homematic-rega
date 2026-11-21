@@ -269,8 +269,16 @@ describe('connection handling against a ReGaHSS-like server', () => {
             connections.push(req.headers.connection);
             req.resume();
             req.on('end', () => {
+                const {socket} = req;
+                if (socket.answered) {
+                    // a request on the reused socket before the FIN: ReGaHSS ignores it
+                    return;
+                }
+                socket.answered = true;
                 res.end(latin1('<xml><exec>/rega.exe</exec></xml>'));
-                setImmediate(() => req.socket.destroy());
+                // the FIN a moment later; long enough that a pooling client always reuses the
+                // socket first (newer Node 22 noticed a FIN sent at once and opened a new one)
+                setTimeout(() => socket.destroy(), 30);
             });
         });
         await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));

@@ -68,20 +68,23 @@ handles keep-alive properly; pass your own agent if you want pooling there.
 
 All methods return Promises.
 
-| method                   | resolves to                                                                                                                                  |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `exec(script)`           | `{output, objects}` — the script's output and every variable set in the script (strings)                                                     |
-| `script(file)`           | same, for a script file (UTF-8)                                                                                                              |
-| `getChannels()`          | `[{id, address, name}]` — devices and channels                                                                                               |
-| `getValues()`            | `[{name, value, ts}]` — every datapoint, `name` = `<interface>.<channel>.<datapoint>`                                                        |
-| `getVariables()`         | `[{id, name, info, val, ts, unit, type, enum, channel}]` — `type` is `boolean`/`number`/`string`, `enum` an array, `channel` an id or `null` |
-| `getPrograms()`          | `[{id, name, info, active, ts}]` — `ts` = last execution                                                                                     |
-| `getRooms()`             | `[{id, name, channels}]` — `channels` are channel ids                                                                                        |
-| `getFunctions()`         | `[{id, name, channels}]`                                                                                                                     |
-| `setVariable(id, value)` | `{output, objects}`                                                                                                                          |
-| `startProgram(id)`       |                                                                                                                                              |
-| `setProgram(id, active)` |                                                                                                                                              |
-| `setName(id, name)`      |                                                                                                                                              |
+| method                   | resolves to                                                                                                                                            |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `exec(script)`           | `{output, objects}` — the script's output and every variable set in the script (strings)                                                               |
+| `script(file)`           | same, for a script file (UTF-8)                                                                                                                        |
+| `getChannels()`          | `[{id, address, name}]` — devices and channels                                                                                                         |
+| `getValues()`            | `[{name, value, ts}]` — every datapoint, `name` = `<interface>.<channel>.<datapoint>`                                                                  |
+| `getVariables()`         | `[{id, name, info, val, ts, unit, type, enum, channel, internal}]` — `type` is `boolean`/`number`/`string`, `enum` an array, `channel` an id or `null` |
+| `getPrograms()`          | `[{id, name, info, active, ts}]` — `ts` = last execution                                                                                               |
+| `getRooms()`             | `[{id, name, channels}]` — `channels` are channel ids                                                                                                  |
+| `getFunctions()`         | `[{id, name, channels}]`                                                                                                                               |
+| `setVariable(id, value)` | `{output, objects}`                                                                                                                                    |
+| `startProgram(id)`       |                                                                                                                                                        |
+| `setProgram(id, active)` |                                                                                                                                                        |
+| `setName(id, name)`      |                                                                                                                                                        |
+
+`getVariables()` includes the internal variables (the alarm and service messages 40 and 41, the ones the CCU
+creates for devices) with `internal: true`; leave them out where they are not wanted.
 
 Timestamps (`ts`) are epoch milliseconds; `0` means "never" (the CCU's `1970-01-01 01:00:00`).
 They are converted from the CCU's local time — set `timeZone` when the CCU is not in the time

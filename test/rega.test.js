@@ -116,8 +116,8 @@ describe('Rega', () => {
             body: 'jQuery.extend(langJSON, {\n  "sysVarPresence" : "Anwesenheit",\n  "sysVarPresenceAbsent" : "abwesend",\n});\n',
         };
         setRega(
-            '[{"id": 40, "name": "Alarmmeldungen", "val": 0, "unit": "", "type": "number", "enum": ""},\n' +
-                '{"id": 950, "name": "${sysVarPresence}", "info": "", "val": true, "ts": "2026-01-15 12:00:00", "unit": "", "type": "boolean", "enum": "${sysVarPresenceAbsent};anwesend", "channel": ""},\n' +
+            '[{"id": 40, "name": "Alarmmeldungen", "info": "", "val": 0, "ts": "1970-01-01 01:00:00", "unit": "", "type": "number", "enum": "", "channel": "", "internal": true},\n' +
+                '{"id": 950, "name": "${sysVarPresence}", "info": "", "val": true, "ts": "2026-01-15 12:00:00", "unit": "", "type": "boolean", "enum": "${sysVarPresenceAbsent};anwesend", "channel": "", "internal": false},\n' +
                 '{"id": 951, "name": "Temp%E4ratur", "info": "Ist", "val": 21.5, "ts": "1970-01-01 01:00:00", "unit": "°C", "type": "number", "enum": "", "channel": "1234"},\n' +
                 '{"id": 952, "name": "Text", "info": "", "val": "gr%FCn", "ts": "2026-07-15 12:00:00", "unit": "", "type": "string", "enum": "", "channel": "0"}]' +
                 '<xml><exec>/rega.exe</exec></xml>',
@@ -128,13 +128,18 @@ describe('Rega', () => {
         assert.deepEqual(vars[0], {
             id: 40,
             name: 'Alarmmeldungen',
+            info: '',
             val: 0,
             unit: '',
             type: 'number',
             enum: [],
             ts: 0,
             channel: null,
+            internal: true,
         });
+        assert.equal(vars[1].internal, false);
+        // an entry without the field (a script of 2.0) is not internal
+        assert.equal(vars[2].internal, false);
         assert.equal(vars[1].name, 'Anwesenheit');
         assert.deepEqual(vars[1].enum, ['abwesend', 'anwesend']);
         assert.equal(vars[1].ts, Date.UTC(2026, 0, 15, 12));
@@ -145,6 +150,32 @@ describe('Rega', () => {
         assert.equal(vars[2].channel, 1234);
         assert.equal(vars[3].val, 'grün');
         assert.equal(vars[3].channel, null);
+    });
+
+    test('variables.rega lists the internal variables too (#4, node-red-contrib-ccu#184)', async () => {
+        // EnumUsedIDs() skips every variable with Internal() == true; 40 and 41 were written by hand
+        const {readFile} = await import('node:fs/promises');
+        const script = await readFile(new URL('../scripts/variables.rega', import.meta.url), 'utf8');
+        const code = script
+            .split('\n')
+            .filter((line) => !line.trim().startsWith('!'))
+            .join('\n');
+        assert.match(code, /dom\.GetObject\(ID_SYSTEM_VARIABLES\)\.EnumIDs\(\)/);
+        assert.doesNotMatch(code, /EnumUsedIDs|GetObject\(4[01]\)/);
+        assert.match(code, /oSysVar\.Internal\(\)/);
+        // 40 and 41 keep the names they had (flows address variables by name)
+        assert.match(code, /Write\('Alarmmeldungen'\)/);
+        assert.match(code, /Write\('Servicemeldungen'\)/);
+        // what goes out is a script and the parsed list
+        setRega(
+            '[{"id": 41, "name": "Servicemeldungen", "info": "", "val": 2, "ts": "2026-11-21 12:00:00", "unit": "", "type": "number", "enum": "", "channel": "", "internal": true}]<xml></xml>',
+        );
+        const vars = await rega({timeZone: 'UTC'}).getVariables();
+        assert.match(requests.at(-1).body, /EnumIDs\(\)/);
+        assert.equal(vars.length, 1);
+        assert.equal(vars[0].val, 2);
+        assert.equal(vars[0].ts, Date.UTC(2026, 10, 21, 12));
+        assert.equal(vars[0].internal, true);
     });
 
     test('translations unreachable → names stay as they are, error kept', async () => {

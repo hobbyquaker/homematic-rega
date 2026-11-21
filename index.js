@@ -351,9 +351,11 @@ export class Rega {
     }
 
     /**
-     * All system variables (including the built-in ids 40 alarms and 41 service messages).
+     * All system variables, the internal ones included (the alarm and service messages 40 and 41, the
+     * ones the CCU creates for devices); `internal` tells them apart.
      * @returns {Promise<Array<{id: number, name: string, info: string, val: *, ts: number, unit: string,
-     *          type: 'boolean' | 'number' | 'string', enum: string[], channel: number | null}>>}
+     *          type: 'boolean' | 'number' | 'string', enum: string[], channel: number | null,
+     *          internal: boolean}>>}
      */
     async getVariables() {
         const res = await this._translated('variables.rega');
@@ -365,6 +367,7 @@ export class Rega {
             v.enum = v.enum.map((e) => this._translate(e));
             v.ts = this._ts(v.ts);
             v.channel = toChannelId(v.channel);
+            v.internal = v.internal === true;
         }
         return res;
     }

@@ -2,7 +2,7 @@
 !#
 !# Dieses Script gibt die Systemvariablen im JSON Format aus
 !#
-!# 3'2013-7'2020 hobbyquaker https://github.com/hobbyquaker
+!# 3'2013-11'2026 hobbyquaker https://github.com/hobbyquaker
 !#
 
 object oSysVar;
@@ -11,70 +11,81 @@ string sValueType;
 string sValue;
 boolean bFirst = true;
 
-var alarms = dom.GetObject(40).Value();
-if (alarms == '') {
-    alarms = 0;
-}
-var msgs = dom.GetObject(41).Value();
-if (msgs == '') {
-    msgs = 0;
-}
+!# EnumIDs(), not EnumUsedIDs(): the latter skips every variable with Internal() == true - the
+!# alarm and service messages (40, 41) and the ones the CCU creates for devices (svHmIPRainCounter...)
 
 Write('[');
-WriteLine('{"id": 40, "name": "Alarmmeldungen", "val": ' # alarms # ', "unit": "", "type": "number", "enum": ""},');
-Write('{"id": 41, "name": "Servicemeldungen", "val": ' # msgs # ', "unit": "", "type": "number", "enum": ""}');
-
-foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
-    WriteLine(',');
+foreach (sSysVarId, dom.GetObject(ID_SYSTEM_VARIABLES).EnumIDs()) {
     oSysVar = dom.GetObject(sSysVarId);
-    sValueType = oSysVar.ValueType();
-    Write('{"id": ' # sSysVarId # ', "name": "');
-    WriteURL(oSysVar.Name());
-    Write('", "info": "');
-    WriteURL(oSysVar.DPInfo());
-    Write('", "val": ');
-
-    if (sValueType == 20) {
-        Write('"');
-        WriteURL(oSysVar.Value());
-        Write('"');
-    } else {
-        sValue = oSysVar.Value();
-        if (sValueType == 2) {
-            if (sValue) {
-                Write("true");
-            } else {
-                Write("false");
-            }
+    if (oSysVar) {
+        if (bFirst) {
+            bFirst = false;
         } else {
-            if (sValue == "") {
-                Write("0");
+            WriteLine(',');
+        }
+        sValueType = oSysVar.ValueType();
+        Write('{"id": ' # sSysVarId # ', "name": "');
+        !# 40 and 41 keep the names they always had here (flows address variables by name)
+        if (oSysVar.ID() == 40) {
+            Write('Alarmmeldungen');
+        } else {
+            if (oSysVar.ID() == 41) {
+                Write('Servicemeldungen');
             } else {
-                Write(sValue);
+                WriteURL(oSysVar.Name());
             }
         }
-    }
+        Write('", "info": "');
+        WriteURL(oSysVar.DPInfo());
+        Write('", "val": ');
 
-    Write(', "ts": "' # oSysVar.Timestamp());
-    Write('", "unit": "' # oSysVar.ValueUnit() # '"');
-    if (sValueType == 2) {
-        Write(', "type": "boolean", "enum": "');
-        WriteURL(oSysVar.ValueName0());
-        Write(';');
-        WriteURL(oSysVar.ValueName1());
-        Write('"');
-    } else {
         if (sValueType == 20) {
-            Write(', "type": "string", "enum": ""');
-        } else {
-            Write(', "type": "number", "enum": "');
-            WriteURL(oSysVar.ValueList());
             Write('"');
+            WriteURL(oSysVar.Value());
+            Write('"');
+        } else {
+            sValue = oSysVar.Value();
+            if (sValueType == 2) {
+                if (sValue) {
+                    Write("true");
+                } else {
+                    Write("false");
+                }
+            } else {
+                if (sValue == "") {
+                    Write("0");
+                } else {
+                    Write(sValue);
+                }
+            }
         }
-    }
-    Write(', "channel": "' # oSysVar.Channel() # '"');
 
-    Write('}');
+        Write(', "ts": "' # oSysVar.Timestamp());
+        Write('", "unit": "' # oSysVar.ValueUnit() # '"');
+        if (sValueType == 2) {
+            Write(', "type": "boolean", "enum": "');
+            WriteURL(oSysVar.ValueName0());
+            Write(';');
+            WriteURL(oSysVar.ValueName1());
+            Write('"');
+        } else {
+            if (sValueType == 20) {
+                Write(', "type": "string", "enum": ""');
+            } else {
+                Write(', "type": "number", "enum": "');
+                WriteURL(oSysVar.ValueList());
+                Write('"');
+            }
+        }
+        Write(', "channel": "' # oSysVar.Channel() # '"');
+        if (oSysVar.Internal()) {
+            Write(', "internal": true');
+        } else {
+            Write(', "internal": false');
+        }
+
+        Write('}');
+    }
 }
 
 Write(']');

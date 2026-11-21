@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.1.0
+
+### Fixed
+
+- `getVariables()` lists the internal system variables too. `variables.rega` iterated
+  `EnumUsedIDs()`, which skips every variable with `Internal() == true`: the ones the CCU creates
+  for devices (`svHmIPRainCounterToday_…` of a weather station, the watchdog variables) were
+  missing, and the alarm and service messages (40, 41) were written into the list by hand, without
+  a timestamp (#4; node-red-contrib-ccu#184, @drMaxxi). The script now iterates `EnumIDs()`; 40 and
+  41 come from their objects, with their names `Alarmmeldungen` and `Servicemeldungen` as before.
+
+### Added
+
+- `internal: true|false` on every variable, so a consumer can leave the internal ones out.
+
 ## 2.0.1
 
 ### Fixed
